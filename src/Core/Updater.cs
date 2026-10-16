@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -96,7 +96,7 @@ namespace WinMemoryCleaner
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.Debug(string.Format(Localizer.Culture, "Version check failed: {0}", ex.GetMessage()));
 
                 Reset();
             }
@@ -132,7 +132,7 @@ namespace WinMemoryCleaner
         {
             try
             {
-                if (Settings.AutoUpdate && DateTimeOffset.Now.Subtract(_lastCheck).TotalHours < Constants.App.AutoUpdateInterval)
+                if (!Settings.AutoUpdate || DateTimeOffset.Now.Subtract(_lastCheck).TotalHours < Constants.App.AutoUpdateInterval)
                     return;
 
                 _lastCheck = DateTimeOffset.Now;
@@ -145,13 +145,21 @@ namespace WinMemoryCleaner
 
                 ServicePointManager.DefaultConnectionLimit = 10;
                 ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072 | (SecurityProtocolType)12288; // TLS 1.2 | TLS 1.3
+                try
+                {
+                    ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072; // TLS 1.2
+                    ServicePointManager.SecurityProtocol |= (SecurityProtocolType)12288; // TLS 1.3
+                }
+                catch
+                {
+                    // Fall back to system default if specific protocol not supported by OS
+                }
 
                 _client.DownloadStringAsync(Constants.App.Repository.AssemblyInfoUri, args);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.Debug(string.Format(Localizer.Culture, "Update check failed: {0}", ex.GetMessage()));
 
                 Reset();
             }

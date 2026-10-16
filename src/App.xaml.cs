@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -713,7 +713,7 @@ namespace WinMemoryCleaner
 
                                 var tempXmlFile = System.IO.Path.GetTempFileName();
 
-                        File.WriteAllText(tempXmlFile, taskXml);
+                        File.WriteAllText(tempXmlFile, taskXml, System.Text.Encoding.Unicode);
 
                         var createStartInfo = new ProcessStartInfo("schtasks")
                         {
