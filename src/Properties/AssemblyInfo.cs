@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -8,7 +8,7 @@ using WinMemoryCleaner;
 [assembly: AssemblyCompany(Constants.App.Author.Name)]
 [assembly: AssemblyCopyright(Constants.App.License)]
 [assembly: AssemblyDescription(Constants.App.Title)]
-[assembly: AssemblyKeyFile(Constants.App.KeyFile)]
+// [assembly: AssemblyKeyFile(Constants.App.KeyFile)]
 [assembly: AssemblyProduct(Constants.App.Name)]
 [assembly: AssemblyTitle(Constants.App.Title)]
 [assembly: AssemblyVersion("3.0.8.0")]

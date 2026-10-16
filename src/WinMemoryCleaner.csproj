@@ -51,8 +51,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn>1591;1692</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,7 +66,7 @@
     <DocumentationFile>bin\Release\WinMemoryCleaner.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>CS3001, CS3003</NoWarn>
+    <NoWarn>1591;1692;3001;3003</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Images\win-memory-cleaner.ico</ApplicationIcon>
@@ -79,7 +78,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>WinMemoryCleaner.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\WinMemoryCleaner.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -339,7 +338,4 @@
   <Target Name="CleanupRestartFlag" BeforeTargets="BeforeBuild" Condition="Exists('$(RestartFlag)')">
     <Delete Files="$(RestartFlag)" />
   </Target>
-  <ItemGroup>
-    <Reference Remove="Microsoft.VisualBasic" />
-  </ItemGroup>
 </Project>
