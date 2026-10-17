@@ -1,4 +1,4 @@
-﻿// This file is used by Code Analysis to maintain SuppressMessage attributes that are applied to this project.
+// This file is used by Code Analysis to maintain SuppressMessage attributes that are applied to this project.
 
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,6 +16,8 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Naming", "CA1724:Type names should not match namespaces", Justification = "Ignored", Scope = "type", Target = "~T:WinMemoryCleaner.Structs")]
 [assembly: SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Ignored", Scope = "type", Target = "~T:WinMemoryCleaner.Structs")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignored")]
+[assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Reason code is intentionally lowercase")]
+[assembly: SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Ignored", Scope = "type", Target = "~T:WinMemoryCleaner.Mocker")]
 [assembly: SuppressMessage("Reliability", "CA9998:Migrate from FxCop analyzers to .NET analyzers", Justification = "Legacy .NET Framework version")]
 
 // Test suppressions

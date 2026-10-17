@@ -11,7 +11,7 @@ WinMemoryCleanerEnhanced is a free RAM cleaner that effectively optimizes memory
 
 ## 💾 Download
 
-[![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FPulok-Akibuzzaman%2FWinMemoryCleanerEnhanced%2Freleases%2Flatest&query=%24.tag_name&label=Release&style=for-the-badge)](https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced/releases/latest/download/WinMemoryCleanerEnhanced.exe)
+[![](https://img.shields.io/github/v/release/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced?style=for-the-badge&label=Release&color=blue)](https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced/releases/latest/download/WinMemoryCleanerEnhanced.exe)
 
 WinMemoryCleanerEnhanced is distributed as a single, portable executable file (`WinMemoryCleanerEnhanced.exe`). No installation, setup, or package managers are required—simply download the executable and run it with administrator privileges.
 
