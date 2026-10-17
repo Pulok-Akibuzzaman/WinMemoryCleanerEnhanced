@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   submit-to-chocolatey:
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner'
     name: Submit to Chocolatey Community
     runs-on: windows-latest
     timeout-minutes: 30

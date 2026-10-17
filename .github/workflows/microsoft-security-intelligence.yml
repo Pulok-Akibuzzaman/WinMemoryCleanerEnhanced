@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   print-reminder:
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner'
     name: Submit a file for malware analysis
     runs-on: ubuntu-latest
     steps:

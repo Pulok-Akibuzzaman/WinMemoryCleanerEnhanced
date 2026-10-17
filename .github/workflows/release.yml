@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'src/**'
+      - '.github/workflows/**'
+      - 'README.md'
   workflow_dispatch:
     inputs:
       force_version_from_file:
@@ -129,9 +131,10 @@ jobs:
           $tag = "${{ needs.build.outputs.new_tag }}"
           git fetch --tags
           if (-not (git tag -l $tag)) {
-            git config user.name "github-actions"; git config user.email "github-actions@github.com"
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
             git tag $tag
-            git push origin $tag
+            try { git push origin $tag } catch { Write-Host "Tag push via CLI skipped, action-gh-release will create it." }
           } else {
             Write-Host "Tag '$tag' already exists. Reusing..."
           }
@@ -181,14 +184,22 @@ jobs:
           tag_name: ${{ needs.build.outputs.new_tag }}
           name: ${{ needs.build.outputs.new_tag }}
           body: |
-            **${{ steps.commit_date.outputs.date }}**
-            ${{ steps.formatted_message.outputs.body }}
+            ## Windows Memory Cleaner Enhanced ${{ needs.build.outputs.new_tag }}
+
+            Standalone portable release of WinMemoryCleanerEnhanced.
+            
+            ### Files Included:
+            - `WinMemoryCleanerEnhanced.exe` (Portable executable)
+            - `WinMemoryCleanerEnhanced.zip` (Complete archive with README and CHANGELOG)
+            - `checksums.txt` (SHA-256 verification hashes)
           files: |
             release_artifacts/WinMemoryCleanerEnhanced.exe
             release_artifacts/WinMemoryCleanerEnhanced.zip
             release_artifacts/checksums.txt
-          draft: true
-          generate_release_notes: false
+          draft: false
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true
       
       - name: Enable Verification Workflow
         if: steps.check_release.outputs.skip == 'false'

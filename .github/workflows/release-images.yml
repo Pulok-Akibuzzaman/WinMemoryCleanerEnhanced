@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   update-main-window-screenshot:
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner'
     name: Update Main Window Screenshot
     runs-on: windows-latest
     

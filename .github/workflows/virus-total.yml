@@ -13,6 +13,7 @@ env:
 
 jobs:
   submit-virustotal:
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner'
     name: Submit latest release to VirusTotal
     runs-on: ubuntu-latest
     timeout-minutes: 30

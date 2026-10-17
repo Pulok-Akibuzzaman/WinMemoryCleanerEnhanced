@@ -32,7 +32,7 @@ jobs:
     name: Submit to WinGet
     runs-on: windows-latest
     timeout-minutes: 30
-    if: ${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && (inputs.run_submit == true || inputs.run_submit == 'true')) }}
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner' && (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && (inputs.run_submit == true || inputs.run_submit == 'true')))
     defaults:
       run:
         shell: bash

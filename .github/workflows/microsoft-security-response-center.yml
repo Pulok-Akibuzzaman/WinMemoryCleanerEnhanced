@@ -17,6 +17,7 @@ env:
 
 jobs:
   submit-msrc:
+    if: github.repository == 'IgorMundstein/WinMemoryCleaner'
     name: Submit to Microsoft Security Response Center (MSRC)
     runs-on: ubuntu-latest
     timeout-minutes: 15
