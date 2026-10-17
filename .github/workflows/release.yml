@@ -42,72 +42,23 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Bump version tag
-        id: bump
-        if: github.event.inputs.force_version_from_file != 'true'
-        shell: pwsh
-        run: |
-          git fetch --tags
-          $currentTag = git tag --sort=-creatordate | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | Select-Object -First 1
-          if (-not $currentTag) {
-            $major = 1; $minor = 0; $patch = 0
-          } else {
-            $parts = $currentTag.Split('.')
-            $major = [int]$parts[0]
-            $minor = [int]$parts[1]
-            $patch = [int]$parts[2] + 1
-          }
-          $newTag = "$($major).$($minor).$($patch)"
-          "new_tag=$newTag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          Write-Host "New tag generated (from bump): $newTag"
-
-      - name: Get Version from AssemblyInfo (Force)
-        id: get_from_asm
-        if: github.event.inputs.force_version_from_file == 'true'
-        shell: pwsh
-        run: |
-          $assemblyInfoPath = "src/Properties/AssemblyInfo.cs"
-          $assemblyInfo = Get-Content $assemblyInfoPath
-          $versionLine = $assemblyInfo | Select-String -Pattern 'AssemblyVersion\("([0-9\.]+)"\)'
-          if (-not $versionLine) {
-            Write-Host "::error::Could not find AssemblyVersion in $assemblyInfoPath"
-            exit 1
-          }
-          $fullVersion = $versionLine.Matches.Groups[1].Value
-          $newTag = ($fullVersion -split '\.')[0..2] -join '.'
-          Write-Host "New tag generated (from file): $newTag"
-          "new_tag=$newTag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-      - name: Set Release Version
+      - name: Determine Release Version
         id: version
         shell: pwsh
         run: |
-          $newTag = "${{ steps.bump.outputs.new_tag || steps.get_from_asm.outputs.new_tag }}"
-          Write-Host "Consolidated version for release: $newTag"
-          "new_tag=$newTag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-      - name: Check AssemblyVersion matches new tag
-        if: github.event.inputs.force_version_from_file != 'true'
-        shell: pwsh
-        run: |
-          $expectedVersion = "${{ steps.version.outputs.new_tag }}"
-          Write-Host "Checking for expected release version: $expectedVersion"
           $assemblyInfoPath = "src/Properties/AssemblyInfo.cs"
           $assemblyInfo = Get-Content $assemblyInfoPath
-          $versionLine = $assemblyInfo | Select-String -Pattern 'AssemblyVersion\("([0-9\.]+)"\)'
-          if (-not $versionLine) {
-               Write-Host "::error::Could not find AssemblyVersion in $assemblyInfoPath"
-               exit 1
-          }
-          $fullVersion = $versionLine.Matches.Groups[1].Value
-          $fileVersion = ($fullVersion -split '\.')[0..2] -join '.'
-          Write-Host "Found version in file: $fileVersion (full: $fullVersion)"
-          if ($fileVersion -eq $expectedVersion) {
-               Write-Host "✅ AssemblyVersion matches the new tag."
+          $infoVersionLine = $assemblyInfo | Select-String -Pattern 'AssemblyInformationalVersion\("([^"]+)"\)'
+          if ($infoVersionLine) {
+            $ver = $infoVersionLine.Matches.Groups[1].Value
           } else {
-               Write-Host "::error::Version mismatch! Expected '$expectedVersion' but found '$fileVersion' in AssemblyInfo.cs. Please update the file before releasing."
-               exit 1
+            $versionLine = $assemblyInfo | Select-String -Pattern 'AssemblyVersion\("([0-9\.]+)"\)'
+            $ver = ($versionLine.Matches.Groups[1].Value -split '\.')[0..2] -join '.'
           }
+          $newTag = "v$ver"
+          Write-Host "Determined Release Version: $ver (Tag: $newTag)"
+          "new_tag=$newTag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "app_version=$ver" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Restore NuGet packages
         shell: pwsh
@@ -120,7 +71,7 @@ jobs:
       - name: Run Unit Tests (Release Gate)
         shell: pwsh
         run: |
-          $testAssembly = "src\bin\Release\WinMemoryCleaner.exe"  
+          $testAssembly = "src\bin\Release\WinMemoryCleanerEnhanced.exe"  
           $testRunner = "src\packages\NUnit.Runners.2.6.4\tools\nunit-console.exe"
           
           if (-Not (Test-Path $testRunner)) {
@@ -136,41 +87,20 @@ jobs:
             exit $LASTEXITCODE
           }
 
-      - name: Upload EXE for signing
-        id: upload-for-signing
-        uses: actions/upload-artifact@v4
-        with:
-          name: winmemorycleaner-${{ steps.version.outputs.new_tag }}
-          path: src\bin\Release\WinMemoryCleaner.exe
-          if-no-files-found: error
-
-      - name: Submit to SignPath (release cert)
-        if: github.repository == 'IgorMundstein/WinMemoryCleaner' && github.ref == 'refs/heads/main'
-        id: signpath
-        uses: signpath/github-action-submit-signing-request@v1.1
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: WinMemoryCleaner
-          signing-policy-slug: release-signing
-          github-artifact-id: ${{ steps.upload-for-signing.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: ./
-
-      - name: Create ZIP archive from SIGNED exe
-        if: steps.signpath.conclusion == 'success'
+      - name: Package Release Files
         shell: pwsh
         run: |
-          Compress-Archive -Path "WinMemoryCleaner.exe", "README.md", "CHANGELOG.md" -DestinationPath WinMemoryCleaner.zip
+          $sourceExe = "src\bin\Release\WinMemoryCleanerEnhanced.exe"
+          Copy-Item -Path $sourceExe -Destination "WinMemoryCleanerEnhanced.exe" -Force
+          Compress-Archive -Path "WinMemoryCleanerEnhanced.exe", "README.md", "CHANGELOG.md" -DestinationPath "WinMemoryCleanerEnhanced.zip" -Force
 
       - name: Upload release artifacts
-        if: steps.signpath.conclusion == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: winmemorycleaner-release-${{ steps.version.outputs.new_tag }}
+          name: WinMemoryCleanerEnhanced-release-${{ steps.version.outputs.new_tag }}
           path: |
-            WinMemoryCleaner.exe
-            WinMemoryCleaner.zip
+            WinMemoryCleanerEnhanced.exe
+            WinMemoryCleanerEnhanced.zip
           retention-days: 30
 
   release:
@@ -183,13 +113,13 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
-          name: winmemorycleaner-release-${{ needs.build.outputs.new_tag }}
+          name: WinMemoryCleanerEnhanced-release-${{ needs.build.outputs.new_tag }}
           path: release_artifacts
       - name: Create Checksums
         shell: pwsh
         working-directory: release_artifacts
         run: |
-          Get-FileHash -Algorithm SHA256 -Path "WinMemoryCleaner.exe", "WinMemoryCleaner.zip" | ForEach-Object {
+          Get-FileHash -Algorithm SHA256 -Path "WinMemoryCleanerEnhanced.exe", "WinMemoryCleanerEnhanced.zip" | ForEach-Object {
             $_.Hash.ToLower() + "  " + (Split-Path -Leaf $_.Path)
           } | Out-File -FilePath "checksums.txt" -Encoding utf8
           Write-Host "Generated checksums.txt:"; cat checksums.txt
@@ -254,17 +184,17 @@ jobs:
             **${{ steps.commit_date.outputs.date }}**
             ${{ steps.formatted_message.outputs.body }}
           files: |
-            release_artifacts/WinMemoryCleaner.exe
-            release_artifacts/WinMemoryCleaner.zip
+            release_artifacts/WinMemoryCleanerEnhanced.exe
+            release_artifacts/WinMemoryCleanerEnhanced.zip
             release_artifacts/checksums.txt
           draft: true
           generate_release_notes: false
       
-      - name: 🚀 Enable Verification Workflow
+      - name: Enable Verification Workflow
         if: steps.check_release.outputs.skip == 'false'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
-          Write-Host "New release created. Re-enabling the daily package verification workflow."
-          gh workflow enable verify-and-test-packages.yml
+          gh workflow enable verify-and-test-packages.yml || true

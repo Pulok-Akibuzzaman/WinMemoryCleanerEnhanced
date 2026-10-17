@@ -7,15 +7,15 @@
 
 WinMemoryCleanerEnhanced is a free RAM cleaner that effectively optimizes memory areas by utilizing the native Windows API. This can help improve performance when programs do not properly release allocated memory. Featuring a user-friendly interface and intelligent functionality, this portable application requires no installation; however, it does need administrator privileges to run.
 
-[![](./docs/assets/images/main-window.png)](#windows-memory-cleaner-enhanced-winmemorycleanerenhanced)
+[![](./docs/assets/images/main-window-enhanced.png)](#windows-memory-cleaner-enhanced-winmemorycleanerenhanced)
 
 ## 💾 Download
 
-[![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FIgorMundstein%2FWinMemoryCleaner%2Freleases%2Flatest&query=%24.tag_name&label=Release&style=for-the-badge)](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest/download/WinMemoryCleanerEnhanced.exe)
+[![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FPulok-Akibuzzaman%2FWinMemoryCleanerEnhanced%2Freleases%2Flatest&query=%24.tag_name&label=Release&style=for-the-badge)](https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced/releases/latest/download/WinMemoryCleanerEnhanced.exe)
 
 WinMemoryCleanerEnhanced is distributed as a single, portable executable file (`WinMemoryCleanerEnhanced.exe`). No installation, setup, or package managers are required—simply download the executable and run it with administrator privileges.
 
-👉 **[Download Latest WinMemoryCleanerEnhanced.exe](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest/download/WinMemoryCleanerEnhanced.exe)** or browse all releases on the **[Releases Page](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest)**.
+👉 **[Download Latest WinMemoryCleanerEnhanced.exe](https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced/releases/latest/download/WinMemoryCleanerEnhanced.exe)** or browse all releases on the **[Releases Page](https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced/releases/latest)**.
 
 ## 🚀 Features
 
@@ -44,7 +44,7 @@ WinMemoryCleanerEnhanced is distributed as a single, portable executable file (`
 
 The Compact Mode feature allows you to collapse the main window into a minimal view for at-a-glance monitoring. By clicking the arrow next to the minimize button, the UI shrinks to show only the most essential memory statistics and controls. This mode is ideal for users who want to keep an eye on their system’s memory usage without occupying much screen space. Toggle Compact Mode on or off at any time to suit your workflow.
 
-[![](./docs/assets/images/main-window-compact.png)](#%EF%B8%8F-compact-mode)
+[![](./docs/assets/images/main-window-compact-enhanced.png)](#%EF%B8%8F-compact-mode)
 
 ### 🔔 System Tray (Notification Area)
 
@@ -388,8 +388,8 @@ WinMemoryCleanerEnhanced compiles into a single, portable, self-contained execut
 
 1. **Clone the repository:**
    ```cmd
-   git clone https://github.com/IgorMundstein/WinMemoryCleaner.git
-   cd WinMemoryCleaner
+   git clone https://github.com/Pulok-Akibuzzaman/WinMemoryCleanerEnhanced.git
+   cd WinMemoryCleanerEnhanced
    ```
 
 2. **Restore NuGet dependencies:**

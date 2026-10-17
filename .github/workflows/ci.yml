@@ -29,7 +29,7 @@ jobs:
     runs-on: windows-latest
     outputs:
       app_version: ${{ steps.version.outputs.app_version }}
-      unsigned_artifact_name: winmemorycleaner-${{ steps.version.outputs.app_version }}
+      unsigned_artifact_name: WinMemoryCleanerEnhanced-${{ steps.version.outputs.app_version }}
       test_artifact_name: ${{ steps.determine_artifact.outputs.name }}
       src_changed: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.check_files.outputs.any_changed == 'true' }}
 
@@ -72,7 +72,7 @@ jobs:
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || steps.check_files.outputs.any_changed == 'true'
         shell: pwsh
         run: |
-          $testAssembly = "src\bin\Release\WinMemoryCleaner.exe"  
+          $testAssembly = "src\bin\Release\WinMemoryCleanerEnhanced.exe"  
           $testRunner = "src\packages\NUnit.Runners.2.6.4\tools\nunit-console.exe"
           
           if (-Not (Test-Path $testRunner)) {
@@ -137,8 +137,8 @@ jobs:
         id: upload-unsigned
         uses: actions/upload-artifact@v4
         with:
-          name: winmemorycleaner-${{ steps.version.outputs.app_version }}
-          path: src\bin\Release\WinMemoryCleaner.exe
+          name: WinMemoryCleanerEnhanced-${{ steps.version.outputs.app_version }}
+          path: src\bin\Release\WinMemoryCleanerEnhanced.exe
           if-no-files-found: error
 
       - name: Submit to SignPath (Develop CI Signing)
@@ -158,8 +158,8 @@ jobs:
         if: steps.signpath.conclusion == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: winmemorycleaner-${{ steps.version.outputs.app_version }}-signed
-          path: WinMemoryCleaner.exe
+          name: WinMemoryCleanerEnhanced-${{ steps.version.outputs.app_version }}-signed
+          path: WinMemoryCleanerEnhanced.exe
           retention-days: 30
 
       - name: Determine Test Artifact
@@ -168,9 +168,9 @@ jobs:
         shell: pwsh
         run: |
           if ('${{ steps.signpath.conclusion }}' -eq 'success') {
-            echo "name=winmemorycleaner-${{ steps.version.outputs.app_version }}-signed" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            echo "name=WinMemoryCleanerEnhanced-${{ steps.version.outputs.app_version }}-signed" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           } else {
-            echo "name=winmemorycleaner-${{ steps.version.outputs.app_version }}" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            echo "name=WinMemoryCleanerEnhanced-${{ steps.version.outputs.app_version }}" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           }
 
   test-ui:
@@ -192,8 +192,11 @@ jobs:
       - name: Run UI Test
         shell: pwsh
         run: |
-          $appPath = ".\WinMemoryCleaner.exe"
-          $appName = "WinMemoryCleaner"
+          $appPath = Get-ChildItem -Filter "WinMemoryCleanerEnhanced.exe" -Recurse | Select-Object -ExpandProperty FullName -First 1
+          if (-not $appPath) {
+            $appPath = ".\WinMemoryCleanerEnhanced.exe"
+          }
+          $appName = "WinMemoryCleanerEnhanced"
           $screenshotPath = ".\screenshot-${{ matrix.os }}.png"
           
           $process = Start-Process -FilePath $appPath -PassThru
