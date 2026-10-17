@@ -68,7 +68,7 @@ jobs:
 
       - name: Build solution
         shell: pwsh
-        run: msbuild src\WinMemoryCleaner.sln /m /p:Configuration=Release /p:Platform="Any CPU"
+        run: msbuild src\WinMemoryCleaner.sln /m /p:Configuration=Release /p:Platform="Any CPU" /p:IsCI=true
 
       - name: Run Unit Tests (Release Gate)
         shell: pwsh

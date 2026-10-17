@@ -307,6 +307,7 @@
   <Import Project="packages\Microsoft.NETFramework.ReferenceAssemblies.net40.1.0.3\build\Microsoft.NETFramework.ReferenceAssemblies.net40.targets" Condition="Exists('packages\Microsoft.NETFramework.ReferenceAssemblies.net40.1.0.3\build\Microsoft.NETFramework.ReferenceAssemblies.net40.targets')" />
   <PropertyGroup>
     <IsCI Condition=" '$(CI)' == 'true' ">true</IsCI>
+    <IsCI Condition=" '$(IsCI)' == '' and ('$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true') ">true</IsCI>
     <IsCI Condition=" '$(IsCI)' == '' ">false</IsCI>
     <ProgramFilesX86>$([System.Environment]::GetEnvironmentVariable('ProgramFiles(x86)'))</ProgramFilesX86>
     <NetFramework40RootDir>$(ProgramFilesX86)\Reference Assemblies\Microsoft\Framework\.NETFramework</NetFramework40RootDir>
