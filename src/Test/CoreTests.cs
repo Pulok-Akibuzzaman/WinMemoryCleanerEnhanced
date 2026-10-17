@@ -107,7 +107,7 @@ namespace WinMemoryCleaner.Test
             {
                 Assert.IsNotNull(Constants.App.Name);
                 Assert.IsFalse(string.IsNullOrEmpty(Constants.App.Name));
-                Assert.AreEqual("WinMemoryCleaner", Constants.App.Name);
+                Assert.AreEqual("WinMemoryCleanerEnhanced", Constants.App.Name);
             }
 
             [Test]
@@ -145,13 +145,13 @@ namespace WinMemoryCleaner.Test
             {
                 Assert.IsNotNull(Constants.App.Title);
                 Assert.IsFalse(string.IsNullOrEmpty(Constants.App.Title));
-                Assert.AreEqual("Windows Memory Cleaner", Constants.App.Title);
+                Assert.AreEqual("Windows Memory Cleaner Enhanced", Constants.App.Title);
             }
 
             [Test]
             public void App_VersionFormat_IsValid()
             {
-                Assert.AreEqual("{0}.{1}.{2}", Constants.App.VersionFormat);
+                Assert.AreEqual("{0}.{1}.{2}E", Constants.App.VersionFormat);
             }
 
             [Test]

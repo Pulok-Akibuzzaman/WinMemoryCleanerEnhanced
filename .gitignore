@@ -17,6 +17,7 @@
 mono_crash.*
 
 # Build results
+/WinMemoryCleaner.exe
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
@@ -19,11 +19,11 @@ namespace WinMemoryCleaner
             public const string KeyFile = "WinMemoryCleaner.snk";
             public const string License = "GPL-3.0";
             public const string LocalizationResourcePath = EmbeddedResourcePath + "Localization.";
-            public const string Name = "WinMemoryCleaner";
-            public const string Shortcut = "Windows Memory Cleaner.lnk";
+            public const string Name = "WinMemoryCleanerEnhanced";
+            public const string Shortcut = "Windows Memory Cleaner Enhanced.lnk";
             public const string ThemesResourcePath = EmbeddedResourcePath + "Themes.";
-            public const string Title = "Windows Memory Cleaner";
-            public const string VersionFormat = "{0}.{1}.{2}";
+            public const string Title = "Windows Memory Cleaner Enhanced";
+            public const string VersionFormat = "{0}.{1}.{2}E";
 
             public static class Author
             {
@@ -45,9 +45,13 @@ namespace WinMemoryCleaner
 
             public static class CommandLineArgument
             {
+                public const string All = "All";
+                public const string Clean = "Clean";
                 public const string Install = "Install";
+                public const string Optimize = "Optimize";
                 public const string Reset = "Reset";
                 public const string Service = "Service";
+                public const string Silent = "Silent";
                 public const string Uninstall = "Uninstall";
             }
 
@@ -81,7 +85,7 @@ namespace WinMemoryCleaner
                 public static readonly Uri AboutUri = new Uri(GitHub + "?tab=readme-ov-file#windows-memory-cleaner");
                 public static readonly Uri AssemblyInfoUri = new Uri(GitHubRaw + "/src/Properties/AssemblyInfo.cs");
                 public static readonly Uri DownloadUri = new Uri(GitHub + "?tab=readme-ov-file#-download");
-                public static readonly Uri LatestExeUri = new Uri(GitHub + "/releases/latest/download/WinMemoryCleaner.exe");
+                public static readonly Uri LatestExeUri = new Uri(GitHub + "/releases/latest/download/WinMemoryCleanerEnhanced.exe");
                 public static readonly Uri Uri = new Uri(GitHub);
             }
         }

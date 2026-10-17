@@ -1,4 +1,4 @@
-﻿namespace WinMemoryCleaner
+namespace WinMemoryCleaner
 {
     /// <summary>
     /// Log Optimization Data Memory Area
@@ -12,6 +12,14 @@
         /// The duration.
         /// </value>
         public string Duration { get; set; }
+
+        /// <summary>
+        /// Gets or sets the duration in milliseconds.
+        /// </summary>
+        /// <value>
+        /// The duration in milliseconds.
+        /// </value>
+        public long DurationMs { get; set; }
 
         /// <summary>
         /// Gets or sets the error.
@@ -28,5 +36,13 @@
         /// The area.
         /// </value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the invariant name code.
+        /// </summary>
+        /// <value>
+        /// The invariant name code.
+        /// </value>
+        public string NameCode { get; set; }
     }
 }

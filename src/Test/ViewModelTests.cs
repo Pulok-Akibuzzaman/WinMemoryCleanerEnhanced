@@ -358,6 +358,12 @@ namespace WinMemoryCleaner.Test
             }
 
             [Test]
+            public void LastOptimizationStatus_DefaultsToNull()
+            {
+                Assert.IsNull(_viewModel.LastOptimizationStatus);
+            }
+
+            [Test]
             public void KeyboardKeys_ReturnsFromHotkeyService()
             {
                 var keys = _viewModel.KeyboardKeys;

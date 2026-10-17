@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace WinMemoryCleaner
 {
@@ -26,6 +26,11 @@ namespace WinMemoryCleaner
         /// <param name="timeout">The time period, in seconds</param>
         /// <param name="icon">The icon</param>
         void Notify(string message, string title = null, int timeout = 5, Enums.Icon.Notification icon = Enums.Icon.Notification.None);
+
+        /// <summary>
+        /// Refreshes the tray icon in the notification area (e.g. after explorer restart).
+        /// </summary>
+        void RefreshTrayIcon();
 
         /// <summary>
         /// Update Info

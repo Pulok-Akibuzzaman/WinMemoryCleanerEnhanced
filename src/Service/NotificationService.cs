@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -105,6 +105,28 @@ namespace WinMemoryCleaner
             Update(new Memory());
 
             _notifyIcon.Visible = true;
+        }
+
+        /// <summary>
+        /// Refreshes the tray icon in the notification area (e.g. after explorer restart).
+        /// </summary>
+        public void RefreshTrayIcon()
+        {
+            InvokeOnUi(() =>
+            {
+                try
+                {
+                    if (_disposed || _notifyIcon == null)
+                        return;
+
+                    _notifyIcon.Visible = false;
+                    _notifyIcon.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Debug(ex);
+                }
+            });
         }
 
         #endregion
@@ -352,9 +374,17 @@ namespace WinMemoryCleaner
             {
                 lock (_iconRenderLock)
                 {
-                    using (var image = new Bitmap(16, 16))
+                    var iconSize = SystemInformation.SmallIconSize;
+                    var width = iconSize.Width > 0 ? iconSize.Width : 16;
+                    var height = iconSize.Height > 0 ? iconSize.Height : 16;
+
+                    var fontSize = Settings.TrayIconFontSize > 0
+                        ? Settings.TrayIconFontSize * (height / 16.0f)
+                        : (height * 0.82f);
+
+                    using (var image = new Bitmap(width, height))
                     using (var graphics = Graphics.FromImage(image))
-                    using (var font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Pixel))
+                    using (var font = new Font("Consolas", fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
                     using (var format = new StringFormat())
                     using (var backgroundBrush = GetBackgroundBrush(memory, isOptimizing))
                     using (var textBrush = GetTextBrush(memory, isOptimizing))
@@ -366,26 +396,29 @@ namespace WinMemoryCleaner
                         // Configure graphics quality
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                        graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+                        graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
                         // Draw background
                         if (!Settings.TrayIconUseTransparentBackground)
                         {
                             using (var path = new GraphicsPath())
                             {
-                                path.AddArc(0, 0, 10, 10, 180, 90);
-                                path.AddArc(5, 0, 10, 10, 270, 90);
-                                path.AddArc(5, 5, 10, 10, 0, 90);
-                                path.AddArc(0, 5, 10, 10, 90, 90);
+                                var arcRadius = Math.Max(4f, height * 0.35f);
+                                path.AddArc(0, 0, arcRadius, arcRadius, 180, 90);
+                                path.AddArc(width - arcRadius, 0, arcRadius, arcRadius, 270, 90);
+                                path.AddArc(width - arcRadius, height - arcRadius, arcRadius, arcRadius, 0, 90);
+                                path.AddArc(0, height - arcRadius, arcRadius, arcRadius, 90, 90);
                                 path.CloseFigure();
 
                                 graphics.FillPath(backgroundBrush, path);
                             }
                         }
 
-                        // Draw text
-                        graphics.DrawString(string.Format(CultureInfo.InvariantCulture, "{0:00}", memory.Physical.Used.Percentage == 100 ? 99 : memory.Physical.Used.Percentage), font, textBrush, 8F, 9F, format);
+                        // Draw text centered
+                        var centerX = width / 2.0f;
+                        var centerY = height / 2.0f + (height >= 24 ? 1.0f : 0.5f);
+                        graphics.DrawString(string.Format(CultureInfo.InvariantCulture, "{0:00}", memory.Physical.Used.Percentage == 100 ? 99 : memory.Physical.Used.Percentage), font, textBrush, centerX, centerY, format);
 
                         var handle = image.GetHicon();
 

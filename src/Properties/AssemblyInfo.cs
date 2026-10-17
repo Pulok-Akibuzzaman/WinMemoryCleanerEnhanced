@@ -6,12 +6,14 @@ using System.Windows;
 using WinMemoryCleaner;
 
 [assembly: AssemblyCompany(Constants.App.Author.Name)]
-[assembly: AssemblyCopyright(Constants.App.License)]
-[assembly: AssemblyDescription(Constants.App.Title)]
+[assembly: AssemblyCopyright("Copyright © " + Constants.App.Author.Name + " (" + Constants.App.License + ")")]
+[assembly: AssemblyDescription(Constants.App.Title + " - Originally created by " + Constants.App.Author.Name)]
 // [assembly: AssemblyKeyFile(Constants.App.KeyFile)]
 [assembly: AssemblyProduct(Constants.App.Name)]
 [assembly: AssemblyTitle(Constants.App.Title)]
-[assembly: AssemblyVersion("3.0.8.0")]
+[assembly: AssemblyVersion("3.0.9.0")]
+[assembly: AssemblyFileVersion("3.0.9.0")]
+[assembly: AssemblyInformationalVersion("3.0.9E")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 [assembly: Guid(Constants.App.Id)]

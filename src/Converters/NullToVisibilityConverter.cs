@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -23,7 +23,10 @@ namespace WinMemoryCleaner
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Visibility.Collapsed : Visibility.Visible;
+            if (value == null || (value is string && string.IsNullOrEmpty((string)value)))
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
 
         /// <summary>

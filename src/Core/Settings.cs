@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -84,6 +84,12 @@ namespace WinMemoryCleaner
 
         public static byte TrayIconWarningLevel { get; set; }
 
+        public static int TrayIconFontSize { get; set; }
+
+        public static double? WindowLeft { get; set; }
+
+        public static double? WindowTop { get; set; }
+
         public static bool UseHotkey { get; set; }
 
         #endregion
@@ -122,6 +128,9 @@ namespace WinMemoryCleaner
             TrayIconUseTransparentBackground = false;
             TrayIconWarningColor = Brushes.DarkGoldenrod;
             TrayIconWarningLevel = 80;
+            TrayIconFontSize = 0;
+            WindowLeft = null;
+            WindowTop = null;
             UseHotkey = false;
 
             // User values
@@ -195,6 +204,16 @@ namespace WinMemoryCleaner
                         TrayIconUseTransparentBackground = Convert.ToBoolean(key.GetValue(Helper.NameOf(() => TrayIconUseTransparentBackground), TrayIconUseTransparentBackground), _culture);
                         TrayIconWarningColor = Convert.ToString(key.GetValue(Helper.NameOf(() => TrayIconWarningColor), TrayIconWarningColor), _culture).ToBrush(TrayIconWarningColor);
                         TrayIconWarningLevel = Convert.ToByte(key.GetValue(Helper.NameOf(() => TrayIconWarningLevel), TrayIconWarningLevel), _culture);
+
+                        if (key.GetValue(Helper.NameOf(() => TrayIconFontSize)) != null)
+                            TrayIconFontSize = Convert.ToInt32(key.GetValue(Helper.NameOf(() => TrayIconFontSize), TrayIconFontSize), _culture);
+
+                        if (key.GetValue(Helper.NameOf(() => WindowLeft)) != null)
+                            WindowLeft = Convert.ToDouble(key.GetValue(Helper.NameOf(() => WindowLeft)), _culture);
+
+                        if (key.GetValue(Helper.NameOf(() => WindowTop)) != null)
+                            WindowTop = Convert.ToDouble(key.GetValue(Helper.NameOf(() => WindowTop)), _culture);
+
                         UseHotkey = Convert.ToBoolean(key.GetValue(Helper.NameOf(() => UseHotkey), UseHotkey), _culture);
                     }
                     else
@@ -288,6 +307,22 @@ namespace WinMemoryCleaner
                         key.SetValue(Helper.NameOf(() => TrayIconUseTransparentBackground), TrayIconUseTransparentBackground ? 1 : 0);
                         key.SetValue(Helper.NameOf(() => TrayIconWarningColor), TrayIconWarningColor.GetHex(true));
                         key.SetValue(Helper.NameOf(() => TrayIconWarningLevel), TrayIconWarningLevel);
+
+                        if (TrayIconFontSize > 0)
+                            key.SetValue(Helper.NameOf(() => TrayIconFontSize), TrayIconFontSize);
+                        else
+                            key.DeleteValue(Helper.NameOf(() => TrayIconFontSize), false);
+
+                        if (WindowLeft.HasValue)
+                            key.SetValue(Helper.NameOf(() => WindowLeft), WindowLeft.Value);
+                        else
+                            key.DeleteValue(Helper.NameOf(() => WindowLeft), false);
+
+                        if (WindowTop.HasValue)
+                            key.SetValue(Helper.NameOf(() => WindowTop), WindowTop.Value);
+                        else
+                            key.DeleteValue(Helper.NameOf(() => WindowTop), false);
+
                         key.SetValue(Helper.NameOf(() => UseHotkey), UseHotkey ? 1 : 0);
                     }
                 }

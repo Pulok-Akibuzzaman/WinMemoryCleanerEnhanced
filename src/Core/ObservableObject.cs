@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -29,8 +29,24 @@ namespace WinMemoryCleaner
         /// <param name="propertyName">Name of the property.</param>
         public void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            if (handler == null)
+                return;
+
+            var app = System.Windows.Application.Current;
+            if (app != null && app.Dispatcher != null && !app.Dispatcher.CheckAccess())
+            {
+                app.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    var currentHandler = PropertyChanged;
+                    if (currentHandler != null)
+                        currentHandler.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                }));
+            }
+            else
+            {
+                handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         /// <summary>

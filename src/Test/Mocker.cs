@@ -216,26 +216,34 @@ namespace WinMemoryCleaner.Test
             var data = new LogOptimizationData
             {
                 Reason = reason,
-                Duration = "1.5 seconds"
+                ReasonCode = reason.ToLowerInvariant(),
+                Duration = "1.5 seconds",
+                DurationMs = 1500
             };
 
             data.MemoryAreas.Add(new LogOptimizationDataMemoryArea
             {
                 Name = "Modified Page List",
+                NameCode = "ModifiedPageList",
                 Duration = "0.5 seconds",
+                DurationMs = 500,
                 Error = "Access Denied"
             });
 
             data.MemoryAreas.Add(new LogOptimizationDataMemoryArea
             {
                 Name = "Standby List",
-                Duration = "1.0 seconds"
+                NameCode = "StandbyList",
+                Duration = "1.0 seconds",
+                DurationMs = 1000
             });
 
             data.MemoryAreas.Add(new LogOptimizationDataMemoryArea
             {
                 Name = "Working Set",
-                Duration = "0.5 seconds"
+                NameCode = "WorkingSet",
+                Duration = "0.5 seconds",
+                DurationMs = 500
             });
 
             return data;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WinMemoryCleaner
@@ -25,6 +25,14 @@ namespace WinMemoryCleaner
         public string Duration { get; set; }
 
         /// <summary>  
+        /// Gets or sets the duration in milliseconds.  
+        /// </summary>  
+        /// <value>  
+        /// The duration in milliseconds.  
+        /// </value>  
+        public long DurationMs { get; set; }
+
+        /// <summary>  
         /// Gets or sets the memory.  
         /// </summary>  
         /// <value>  
@@ -40,6 +48,14 @@ namespace WinMemoryCleaner
         /// </value>  
         public string Reason { get; set; }
 
+        /// <summary>  
+        /// Gets or sets the invariant reason code.  
+        /// </summary>  
+        /// <value>  
+        /// The invariant reason code.  
+        /// </value>  
+        public string ReasonCode { get; set; }
+
         /// <summary>
         /// Converts the log optimization data to a JSON-serializable object.
         /// </summary>
@@ -47,16 +63,18 @@ namespace WinMemoryCleaner
         public object ToJson()
         {
             var memoryAreas = MemoryAreas
-                .OrderBy(m => m.Name)
+                .OrderBy(m => m.NameCode ?? m.Name)
                 .Select(m => string.IsNullOrEmpty(m.Error)
-                    ? new { name = m.Name, duration = m.Duration }
-                    : (object)new { name = m.Name, duration = m.Duration, error = m.Error })
+                    ? new { name = m.Name, name_code = m.NameCode, duration = m.Duration, duration_ms = m.DurationMs }
+                    : (object)new { name = m.Name, name_code = m.NameCode, duration = m.Duration, duration_ms = m.DurationMs, error = m.Error })
                 .ToList();
 
             return new
             {
                 reason = Reason,
+                reason_code = ReasonCode,
                 duration = Duration,
+                duration_ms = DurationMs,
                 memoryAreas
             };
         }

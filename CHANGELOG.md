@@ -1,3 +1,11 @@
+### 3.0.9E
+
+**2026-10-17**
+
+- Renamed application to WinMemoryCleanerEnhanced
+- Simplified releases to standalone executable only (removed Chocolatey, Scoop, and WinGet)
+- UI & Code enhancements
+
 ### 3.0.8
 
 **2025-12-13**

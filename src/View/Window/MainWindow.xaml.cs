@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace WinMemoryCleaner
 {
@@ -19,6 +20,9 @@ namespace WinMemoryCleaner
         private const double ExpandedMinHeight = 440;
         private const double ExpandedMinWidth = 680;
         private const double ExpandedWidth = 960;
+
+        private static readonly uint WmTaskbarCreated = NativeMethods.RegisterWindowMessage("TaskbarCreated");
+        private static readonly uint WmRestore = NativeMethods.RegisterWindowMessage("WinMemoryCleaner_Restore");
 
         private bool? _compactModeApplied;
         private bool _expandedLayoutApplied;
@@ -143,6 +147,13 @@ namespace WinMemoryCleaner
         {
             if (Visibility == Visibility.Visible)
             {
+                if (WindowState == WindowState.Normal)
+                {
+                    Settings.WindowLeft = Left;
+                    Settings.WindowTop = Top;
+                    Settings.Save();
+                }
+
                 Hide();
                 ShowInTaskbar = false;
             }
@@ -262,6 +273,82 @@ namespace WinMemoryCleaner
                 return;
 
             DragMove();
+        }
+
+        /// <inheritdoc/>
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+
+            if (IsLoaded && WindowState == WindowState.Normal && Visibility == Visibility.Visible)
+            {
+                Settings.WindowLeft = Left;
+                Settings.WindowTop = Top;
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            if (source != null)
+                source.AddHook(WndProc);
+        }
+
+        /// <summary>
+        /// Window procedure hook to process registered window messages.
+        /// </summary>
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WmRestore && WmRestore != 0)
+            {
+                RestoreAndActivateWindow();
+                handled = true;
+            }
+            else if (msg == WmTaskbarCreated && WmTaskbarCreated != 0)
+            {
+                try
+                {
+                    var notificationService = DependencyInjection.Container.Resolve<INotificationService>();
+                    if (notificationService != null)
+                    {
+                        notificationService.RefreshTrayIcon();
+                        var memory = _viewModel != null && _viewModel.Computer != null ? _viewModel.Computer.Memory : new Memory();
+                        notificationService.Update(memory, _viewModel != null && _viewModel.IsOptimizationRunning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Debug(ex);
+                }
+
+                handled = true;
+            }
+
+            return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Restores and activates the main window from tray or minimized state.
+        /// </summary>
+        public void RestoreAndActivateWindow()
+        {
+            if (Visibility != Visibility.Visible)
+            {
+                Show();
+                ShowInTaskbar = true;
+            }
+
+            if (WindowState == WindowState.Minimized)
+                WindowState = WindowState.Normal;
+
+            Activate();
+            Focus();
+            Topmost = true;
+            Topmost = Settings.AlwaysOnTop;
+            SetFocusTo(Optimize, force: true);
         }
 
         /// <summary>
@@ -388,6 +475,13 @@ namespace WinMemoryCleaner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnMainWindowClosed(object sender, EventArgs e)
         {
+            if (WindowState == WindowState.Normal)
+            {
+                Settings.WindowLeft = Left;
+                Settings.WindowTop = Top;
+                Settings.Save();
+            }
+
             if (_viewModel != null)
                 _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
@@ -399,6 +493,25 @@ namespace WinMemoryCleaner
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (Settings.WindowLeft.HasValue && Settings.WindowTop.HasValue)
+            {
+                var left = Settings.WindowLeft.Value;
+                var top = Settings.WindowTop.Value;
+
+                var virtualLeft = SystemParameters.VirtualScreenLeft;
+                var virtualTop = SystemParameters.VirtualScreenTop;
+                var virtualWidth = SystemParameters.VirtualScreenWidth;
+                var virtualHeight = SystemParameters.VirtualScreenHeight;
+
+                if (left >= virtualLeft - 50 && left < virtualLeft + virtualWidth - 50 &&
+                    top >= virtualTop - 50 && top < virtualTop + virtualHeight - 50)
+                {
+                    WindowStartupLocation = WindowStartupLocation.Manual;
+                    Left = left;
+                    Top = top;
+                }
+            }
+
             SetFocusTo(Optimize);
             ApplyCompactMode(_viewModel != null && _viewModel.CompactMode);
         }

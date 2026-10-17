@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +34,8 @@ namespace WinMemoryCleaner
         private byte _optimizationProgressTotal = byte.MaxValue;
         private byte _optimizationProgressValue = byte.MinValue;
         private string _selectedProcess;
+        private string _lastOptimizationStatus;
+        private ObservableCollection<SolidColorBrush> _brushes;
         private ObservableCollection<ObservableItem<bool>> _trayIconItems;
 
         #endregion
@@ -250,7 +252,10 @@ namespace WinMemoryCleaner
         {
             get
             {
-                return new ObservableCollection<SolidColorBrush>(App.IsInDesignMode ? new List<SolidColorBrush> { System.Windows.Media.Brushes.White } : ThemeManager.Brushes);
+                if (_brushes == null)
+                    _brushes = new ObservableCollection<SolidColorBrush>(App.IsInDesignMode ? new List<SolidColorBrush> { System.Windows.Media.Brushes.White } : ThemeManager.Brushes);
+
+                return _brushes;
             }
         }
 
@@ -543,6 +548,7 @@ namespace WinMemoryCleaner
                         RaisePropertyChanged(() => Computer);
 
                         _trayIconItems = null;
+                        _brushes = null;
 
                         NotificationService.Initialize();
                         NotificationService.Update(Computer.Memory, IsOptimizationRunning);
@@ -798,6 +804,19 @@ namespace WinMemoryCleaner
         }
 
         /// <summary>
+        /// Gets the status message for the last run optimization.
+        /// </summary>
+        public string LastOptimizationStatus
+        {
+            get { return _lastOptimizationStatus; }
+            private set
+            {
+                _lastOptimizationStatus = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Physical Memory Header
         /// </summary>
         public string PhysicalMemoryHeader
@@ -818,11 +837,43 @@ namespace WinMemoryCleaner
         {
             get
             {
-                var processes = new ObservableCollection<string>(Process.GetProcesses()
-                    .Where(process => process != null && !process.ProcessName.Equals(Constants.App.Name) && !Settings.ProcessExclusionList.Contains(process.ProcessName, StringComparer.OrdinalIgnoreCase))
-                    .Select(process => process.ProcessName.ToLower(Localizer.Culture).Replace(".exe", string.Empty))
-                    .Distinct()
-                    .OrderBy(name => name));
+                var rawProcesses = Process.GetProcesses();
+                var processNames = new List<string>(rawProcesses.Length);
+
+                try
+                {
+                    for (var i = 0; i < rawProcesses.Length; i++)
+                    {
+                        var p = rawProcesses[i];
+                        if (p != null)
+                        {
+                            try
+                            {
+                                var name = p.ProcessName;
+                                if (!string.IsNullOrEmpty(name) &&
+                                    !name.Equals(Constants.App.Name, StringComparison.OrdinalIgnoreCase) &&
+                                    !Settings.ProcessExclusionList.Contains(name, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    processNames.Add(name.ToLower(Localizer.Culture).Replace(".exe", string.Empty));
+                                }
+                            }
+                            catch
+                            {
+                                // Process might have exited
+                            }
+                            finally
+                            {
+                                p.Dispose();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Debug(ex);
+                }
+
+                var processes = new ObservableCollection<string>(processNames.Distinct().OrderBy(name => name));
 
                 if (!processes.Contains(SelectedProcess, StringComparer.OrdinalIgnoreCase))
                     SelectedProcess = processes.FirstOrDefault();
@@ -1787,11 +1838,17 @@ namespace WinMemoryCleaner
                     RaisePropertyChanged(() => Computer);
 
                     // Notification
+                    var physicalFreedBytes = Computer.Memory.Physical.Free.Bytes > tempPhysicalAvailable ? Computer.Memory.Physical.Free.Bytes - tempPhysicalAvailable : 0;
+                    var physicalReleased = physicalFreedBytes.ToMemoryUnit();
+                    var virtualFreedBytes = Computer.Memory.Virtual.Free.Bytes > tempVirtualAvailable ? Computer.Memory.Virtual.Free.Bytes - tempVirtualAvailable : 0;
+                    var virtualReleased = virtualFreedBytes.ToMemoryUnit();
+
+                    var freedText = string.Format(Localizer.Culture, "{0:0.#} {1}", physicalReleased.Key, physicalReleased.Value);
+                    var timestamp = DateTime.Now.ToString("t", Localizer.Culture);
+                    LastOptimizationStatus = string.Format(Localizer.Culture, "{0}: {1} ({2})", Localizer.String.MemoryOptimized, freedText, timestamp);
+
                     if (Settings.ShowOptimizationNotifications)
                     {
-                        var physicalReleased = (Computer.Memory.Physical.Free.Bytes > tempPhysicalAvailable ? Computer.Memory.Physical.Free.Bytes - tempPhysicalAvailable : tempPhysicalAvailable - Computer.Memory.Physical.Free.Bytes).ToMemoryUnit();
-                        var virtualReleased = (Computer.Memory.Virtual.Free.Bytes > tempVirtualAvailable ? Computer.Memory.Virtual.Free.Bytes - tempVirtualAvailable : tempVirtualAvailable - Computer.Memory.Virtual.Free.Bytes).ToMemoryUnit();
-
                         var message = Settings.ShowVirtualMemory
                             ? string.Format(Localizer.Culture, "{1}{0}{0}{2}: {3}{0}{4}: {5:0.#} {6}{0}{7}: {8:0.#} {9}", Environment.NewLine, Localizer.String.MemoryOptimized.ToUpper(Localizer.Culture), Localizer.String.Reason, reason.GetString(), Localizer.String.PhysicalMemory, physicalReleased.Key, physicalReleased.Value, Localizer.String.VirtualMemory, virtualReleased.Key, virtualReleased.Value)
                             : string.Format(Localizer.Culture, "{1}{0}{0}{2}: {3}{0}{4}: {5:0.#} {6}", Environment.NewLine, Localizer.String.MemoryOptimized.ToUpper(Localizer.Culture), Localizer.String.Reason, reason.GetString(), Localizer.String.PhysicalMemory, physicalReleased.Key, physicalReleased.Value);
@@ -1839,7 +1896,7 @@ namespace WinMemoryCleaner
 
                 OptimizationProgressStep = Localizer.String.Optimize;
                 OptimizationProgressValue = 0;
-                OptimizationProgressTotal = (byte)(new BitArray(new[] { (int)Settings.MemoryAreas }).OfType<bool>().Count(x => x) + 1);
+                OptimizationProgressTotal = (byte)(CountSetBits((int)Settings.MemoryAreas) + 1);
 
                 ThreadPool.QueueUserWorkItem(_ => Optimize(reason));
             }
@@ -1847,6 +1904,17 @@ namespace WinMemoryCleaner
             {
                 Logger.Error(e);
             }
+        }
+
+        private static int CountSetBits(int value)
+        {
+            var count = 0;
+            while (value != 0)
+            {
+                count++;
+                value &= value - 1;
+            }
+            return count;
         }
 
         /// <summary>

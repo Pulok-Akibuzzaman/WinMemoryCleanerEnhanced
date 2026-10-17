@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.IO;
 
@@ -75,7 +75,7 @@ namespace WinMemoryCleaner
         /// Cleans up orphaned old update files from the temp directory. 
         /// These files were created by the old update mechanism and are no longer needed.
         /// </summary>
-        private static void CleanupOrphanedOldUpdateFiles()
+        public static void CleanupOrphanedOldUpdateFiles()
         {
             try
             {
@@ -88,7 +88,13 @@ namespace WinMemoryCleaner
                 var patterns = new[]
                 {
                     exeName + ".*.new",
-                    exeName + ".*.download"
+                    exeName + ".*.download",
+                    "WinMemoryCleaner.exe.*.new",
+                    "WinMemoryCleaner.exe.*.download",
+                    "WinMemoryCleaner.exe*.new",
+                    "WinMemoryCleanerEnhanced.exe.*.new",
+                    "WinMemoryCleanerEnhanced.exe.*.download",
+                    "WinMemoryCleanerEnhanced.exe*.new"
                 };
                 
                 var filesDeleted = 0;

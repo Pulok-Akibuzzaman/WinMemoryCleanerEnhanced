@@ -265,6 +265,19 @@ namespace WinMemoryCleaner.Test
                 // Assert
                 Assert.AreEqual(System.Windows.Visibility.Collapsed, result);
             }
+
+            [Test]
+            public void Convert_WithEmptyString_ReturnsCollapsed()
+            {
+                // Arrange
+                var converter = new NullToVisibilityConverter();
+
+                // Act
+                var result = converter.Convert(string.Empty, typeof(System.Windows.Visibility), null, CultureInfo.InvariantCulture);
+
+                // Assert
+                Assert.AreEqual(System.Windows.Visibility.Collapsed, result);
+            }
         }
 
         #endregion

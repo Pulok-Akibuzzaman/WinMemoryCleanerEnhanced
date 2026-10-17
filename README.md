@@ -1,36 +1,21 @@
-# Windows Memory Cleaner
+# Windows Memory Cleaner Enhanced (WinMemoryCleanerEnhanced)
 
-[![](https://img.shields.io/badge/WINDOWS-XP%20%E2%80%93%2011-blue?style=for-the-badge)](#windows-memory-cleaner) [![](https://img.shields.io/badge/SERVER-2003%20%E2%80%93%202025-blue?style=for-the-badge)](#windows-memory-cleaner) [![](https://img.shields.io/github/license/IgorMundstein/WinMemoryCleaner?color=2ea44f&style=for-the-badge)](/LICENSE) [![](https://img.shields.io/github/downloads/IgorMundstein/WinMemoryCleaner/total?color=orange&style=for-the-badge)](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest)
+[![](https://img.shields.io/badge/WINDOWS-XP%20%E2%80%93%2011-blue?style=for-the-badge)](#windows-memory-cleaner-enhanced-winmemorycleanerenhanced) [![](https://img.shields.io/badge/SERVER-2003%20%E2%80%93%202025-blue?style=for-the-badge)](#windows-memory-cleaner-enhanced-winmemorycleanerenhanced) [![](https://img.shields.io/github/license/IgorMundstein/WinMemoryCleaner?color=2ea44f&style=for-the-badge)](/LICENSE) [![](https://img.shields.io/github/downloads/IgorMundstein/WinMemoryCleaner/total?color=orange&style=for-the-badge)](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest)
 
-WMC is a free RAM cleaner that effectively optimizes memory areas by utilizing the native Windows API. This can help improve performance when programs do not properly release allocated memory. Featuring a user-friendly interface and intelligent functionality, this portable application requires no installation; however, it does need administrator privileges to run.
+> **Credits & Original Project:** Originally created and developed by **[Igor Mundstein](https://github.com/IgorMundstein)** ([WinMemoryCleaner Repository](https://github.com/IgorMundstein/WinMemoryCleaner)).  
+> **Enhanced Edition:** Modernized, optimized, and maintained with assistance from **Antigravity**.
 
-[![](./docs/assets/images/main-window.png)](#windows-memory-cleaner)
+WinMemoryCleanerEnhanced is a free RAM cleaner that effectively optimizes memory areas by utilizing the native Windows API. This can help improve performance when programs do not properly release allocated memory. Featuring a user-friendly interface and intelligent functionality, this portable application requires no installation; however, it does need administrator privileges to run.
+
+[![](./docs/assets/images/main-window.png)](#windows-memory-cleaner-enhanced-winmemorycleanerenhanced)
 
 ## 💾 Download
 
-[![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FIgorMundstein%2FWinMemoryCleaner%2Freleases%2Flatest&query=%24.tag_name&label=Release&style=for-the-badge)](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest/download/WinMemoryCleaner.exe)
+[![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FIgorMundstein%2FWinMemoryCleaner%2Freleases%2Flatest&query=%24.tag_name&label=Release&style=for-the-badge)](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest/download/WinMemoryCleanerEnhanced.exe)
 
-### 🍫 [Chocolatey](https://community.chocolatey.org/packages/winmemorycleaner)
+WinMemoryCleanerEnhanced is distributed as a single, portable executable file (`WinMemoryCleanerEnhanced.exe`). No installation, setup, or package managers are required—simply download the executable and run it with administrator privileges.
 
-```cmd
-choco install winmemorycleaner
-```
-
-### 🍦 [Scoop](https://scoop.sh/#/apps?q=winmemorycleaner&o=true&dm=true&n=true)
-
-```cmd
-scoop bucket add extras
-```
-
-```cmd
-scoop install extras/winmemorycleaner
-```
-
-### 📦 [WinGet](https://winstall.app/apps/IgorMundstein.WinMemoryCleaner)
-
-```cmd
-winget install IgorMundstein.WinMemoryCleaner
-```
+👉 **[Download Latest WinMemoryCleanerEnhanced.exe](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest/download/WinMemoryCleanerEnhanced.exe)** or browse all releases on the **[Releases Page](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest)**.
 
 ## 🚀 Features
 
@@ -85,7 +70,7 @@ The application provides quick access and information directly from the system t
 
 ## 🧬 Technical Deep Dive: How It Works
 
-WinMemoryCleaner provides a user-friendly interface for powerful, documented Windows API functions. There are no tricks or secrets—just direct access to the tools needed to manage your system's memory effectively. Each cleaning function targets a specific memory area, and its availability depends on your Windows version.
+WinMemoryCleanerEnhanced provides a user-friendly interface for powerful, documented Windows API functions. There are no tricks or secrets—just direct access to the tools needed to manage your system's memory effectively. Each cleaning function targets a specific memory area, and its availability depends on your Windows version.
 
 Here’s a breakdown of what each function does and the minimum supported Windows version required to use it:
 
@@ -108,7 +93,7 @@ The market for PC utilities is plagued by "RAM boosters" that use deceptive tric
 
 ## ✅ The Solution: A Transparent, Evidence-Based Tool
 
-WinMemoryCleaner is the antidote to "snake oil" utilities. It does not use undocumented hacks or harmful tricks. Instead, it provides a clean, user-friendly interface to powerful, **native Windows API functions** that give you direct control over your system's memory. It is a tool built on transparency, proof, and respect for the user.
+WinMemoryCleanerEnhanced is the antidote to "snake oil" utilities. It does not use undocumented hacks or harmful tricks. Instead, it provides a clean, user-friendly interface to powerful, **native Windows API functions** that give you direct control over your system's memory. It is a tool built on transparency, proof, and respect for the user.
 
 ## 🔎 Proof of Concept: See It Work Yourself
 
@@ -117,7 +102,7 @@ Don't take our word for it. You can verify the effects of this tool using Window
 1. Open Resource Monitor (search `resmon.exe` in the Start Menu).
 2. Go to the **Memory** tab. Observe the blue "Standby" portion of the bar. This is RAM used for caching files from closed programs.
 3. Now, open and close a few large applications (a game, a browser, Photoshop). Watch the blue "Standby" section grow.
-4. In WinMemoryCleaner, select **only the `Standby List`** and click `Optimize`.
+4. In WinMemoryCleanerEnhanced, select **only the `Standby List`** and click `Optimize`.
 5. Watch the Resource Monitor again. The blue "Standby" memory will instantly drop, and the light green "Free" memory will increase by the same amount.
 
 This is a direct, verifiable demonstration that the application converts cached memory into truly free memory, ready for your next task.
@@ -128,7 +113,7 @@ We understand that users are rightfully skeptical of system utilities. This proj
 
 ### 🔑 Automated & Secure Builds (CI/CD)
 
-Every official release of WinMemoryCleaner is built, signed, and published automatically by a **CI/CD pipeline using GitHub Actions**. The entire process is defined in the public [release.yml](/.github/workflows/release.yml) workflow file in this repository. This ensures that the distributed executables are compiled directly from the source code hosted on GitHub, eliminating the potential for manual error or intervention.
+Every official release of WinMemoryCleanerEnhanced is built, signed, and published automatically by a **CI/CD pipeline using GitHub Actions**. The entire process is defined in the public [release.yml](/.github/workflows/release.yml) workflow file in this repository. This ensures that the distributed executables are compiled directly from the source code hosted on GitHub, eliminating the potential for manual error or intervention.
 
 ### 🔑 Verifiable Code Signing
 
@@ -173,7 +158,7 @@ Run optimizations silently for scripting and automation. Use any combination of 
 **> Command-line example:**
 
 ```cmd
-{path}\WinMemoryCleaner.exe /ModifiedFileCache /StandbyList /WorkingSet
+{path}\WinMemoryCleanerEnhanced.exe /ModifiedFileCache /StandbyList /WorkingSet
 ```
 
 ### ⚙️ Windows Service Mode
@@ -182,12 +167,12 @@ For continuous, hands-off optimization, install the application as a background 
 
 ✅ **Install Service:**
 ```cmd
-{path}\WinMemoryCleaner.exe /Install
+{path}\WinMemoryCleanerEnhanced.exe /Install
 ```
 
 ❌ **Uninstall Service:**
 ```cmd
-{path}\WinMemoryCleaner.exe /Uninstall
+{path}\WinMemoryCleanerEnhanced.exe /Uninstall
 ```
 
 ## 🔧 Troubleshooting
@@ -200,31 +185,9 @@ This is a common issue that persists with every new app version. I constantly su
 
 **Solutions:**
 
-- **Recommended: Use a Package Manager** — If you frequently encounter false positive detections, auto-update issues, or SmartScreen warnings, we **strongly recommend** installing via [Chocolatey](#-chocolatey), [Scoop](#-scoop), or [WinGet](#-winget). These package managers provide:
-  
-  - Automated update mechanisms that bypass Windows security warnings
-  - Community-verified distribution channels
-  - No manual download/verification steps required
-  - Reduced exposure to false positive antivirus flags
-  - Simplified version management with single-command updates
-
-  **Example update commands:**
-
-  ```cmd
-  choco upgrade winmemorycleaner
-  ````
-  
-  ```cmd
-  scoop update winmemorycleaner
-  ```
-
-  ```cmd
-  winget upgrade IgorMundstein.WinMemoryCleaner
-  ```
-
-- If auto-update fails or you need a verified build, download the latest release from the **Download** section above or the Releases page and manually replace your existing `WinMemoryCleaner.exe`. Run the new file as administrator.
-- Long-term solution: please submit the app to Microsoft for malware analysis to reduce false positives: [submit for analysis](https://www.microsoft.com/en-us/wdsi/filesubmission)
-- Quick workaround: add an exclusion to your antivirus app allowlist or to [Windows Security](https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26)
+- **Quick workaround:** Add an exclusion to your antivirus app allowlist or to [Windows Security](https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26).
+- **Manual download & replacement:** If auto-update fails or you need a verified build, download the latest standalone `WinMemoryCleanerEnhanced.exe` directly from the [Download](#-download) section or the [Releases](https://github.com/IgorMundstein/WinMemoryCleaner/releases/latest) page and manually replace your existing executable. Run the new file as administrator.
+- **Long-term solution:** Please submit the application executable to Microsoft for malware analysis to help reduce false positives: [submit for analysis](https://www.microsoft.com/en-us/wdsi/filesubmission).
 
 #### Verify & replace executable (safe replacement)
 
@@ -234,24 +197,24 @@ If you suspect the binary is corrupted, tampered, or the auto-update fails, foll
 
   1. Download the latest release from the **Download** section above or the Releases page on GitHub.
   2. Right-click the downloaded file → **Properties** → **Digital Signatures** and verify the signer and timestamp.
-  3. Rename your current `WinMemoryCleaner.exe` to `WinMemoryCleaner.exe.bak` (backup).
-  4. Move the new `WinMemoryCleaner.exe` into place and run it as administrator.
+  3. Rename your current `WinMemoryCleanerEnhanced.exe` to `WinMemoryCleanerEnhanced.exe.bak` (backup).
+  4. Move the new `WinMemoryCleanerEnhanced.exe` into place and run it as administrator.
   5. If the new version works, delete the `.bak`. To roll back, restore the `.bak` file.
 
 - Advanced (recommended best practices):
 
-  1. Export current settings (registry): `reg export "HKLM\Software\WinMemoryCleaner" WinMemoryCleaner-reg-backup.reg`
+  1. Export current settings (registry): `reg export "HKLM\Software\WinMemoryCleaner" WinMemoryCleanerEnhanced-reg-backup.reg`
   2. Download the official release and obtain the published SHA256 from the release notes (if provided).
   3. Verify the file hash:
 
      ```powershell
-     Get-FileHash .\WinMemoryCleaner.exe -Algorithm SHA256
+     Get-FileHash .\WinMemoryCleanerEnhanced.exe -Algorithm SHA256
      ```
 
 -   4. Verify the Authenticode signature:
   
      ```powershell
-     Get-AuthenticodeSignature .\WinMemoryCleaner.exe
+     Get-AuthenticodeSignature .\WinMemoryCleanerEnhanced.exe
      ```
 
      Confirm `Status` is `Valid` and signer is expected.
@@ -259,15 +222,15 @@ If you suspect the binary is corrupted, tampered, or the auto-update fails, foll
   5. Stop running instances (and scheduled task if present) before replacing:
 
      ```powershell
-     Stop-Process -Name WinMemoryCleaner -ErrorAction SilentlyContinue
+     Stop-Process -Name WinMemoryCleanerEnhanced -ErrorAction SilentlyContinue
      ```
 
   6. Backup and replace safely:
 
      ```powershell
-     Move-Item .\WinMemoryCleaner.exe WinMemoryCleaner.exe.bak
-     Copy-Item C:\path\to\downloaded\WinMemoryCleaner.exe .\
-     Start-Process .\WinMemoryCleaner.exe -Verb RunAs
+     Move-Item .\WinMemoryCleanerEnhanced.exe WinMemoryCleanerEnhanced.exe.bak
+     Copy-Item C:\path\to\downloaded\WinMemoryCleanerEnhanced.exe .\
+     Start-Process .\WinMemoryCleanerEnhanced.exe -Verb RunAs
      ```
 
   7. Check Event Viewer (`eventvwr` → Windows Logs → Application) for errors. Roll back by restoring the `.bak` and re-enabling tasks if needed.
@@ -286,22 +249,22 @@ If you suspect the binary is corrupted, tampered, or the auto-update fails, foll
 **Command to run (one-line)**
 
 ```cmd
-{path}\WinMemoryCleaner.exe /Reset
+{path}\WinMemoryCleanerEnhanced.exe /Reset
 ```
 
 **Step-by-step (guided)**
 
 1. Click **Start**, type `cmd`.
 2. Right-click **Command Prompt** → **Run as administrator**.
-3. Type (or drag-and-drop) the full path to `WinMemoryCleaner.exe`, then type a space and add `/Reset`.
+3. Type (or drag-and-drop) the full path to `WinMemoryCleanerEnhanced.exe`, then type a space and add `/Reset`.
 
    Example:
 
    ```cmd
-   "C:\Downloads\WinMemoryCleaner.exe" /Reset
+   "C:\Downloads\WinMemoryCleanerEnhanced.exe" /Reset
    ```
 
-   > **💡 TIP:** Drag and drop `WinMemoryCleaner.exe` into the Command Prompt — it inserts the full path. If the path contains spaces, enclose it in double quotes before adding ` /Reset`.
+   > **💡 TIP:** Drag and drop `WinMemoryCleanerEnhanced.exe` into the Command Prompt — it inserts the full path. If the path contains spaces, enclose it in double quotes before adding ` /Reset`.
 
 4. Press **Enter**.
 5. The app will reset and close. Open it normally to use it again.
@@ -313,13 +276,13 @@ All optimization activities and essential operations are logged to the Windows E
 **Steps to view logs:**
 1. Press **Win + R**, type **eventvwr**, and press Enter
 2. Navigate to `Windows Logs > Application`
-3. Look for events with the source name **Windows Memory Cleaner**
+3. Look for events with the source name **Windows Memory Cleaner Enhanced**
 
 [![](./docs/assets/images/windows-event-log.png)](#-logs)
 
 ## 🛠️ Complementary Tools
 
-While **Windows Memory Cleaner** excels at efficiently managing and freeing up memory, the following tools can provide even deeper insights into your system's memory usage and help with advanced troubleshooting:
+While **Windows Memory Cleaner Enhanced** excels at efficiently managing and freeing up memory, the following tools can provide even deeper insights into your system's memory usage and help with advanced troubleshooting:
 
 ### 🔧 [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer)
 
@@ -327,7 +290,7 @@ An advanced task manager from Microsoft Sysinternals that goes beyond what's ava
 
 ### 🔧 [RAMMap](https://learn.microsoft.com/en-us/sysinternals/downloads/rammap)
 
-A powerful physical memory usage analysis utility from Microsoft Sysinternals. RAMMap provides detailed, real-time information about how Windows is allocating physical memory, including how much is in use by processes, drivers, the kernel, and various cached data. **It also contains some cleaning features that address certain memory areas similar to Windows Memory Cleaner.** It's an excellent tool to use alongside WinMemoryCleaner to understand precisely *where* memory is being used before and after an optimization.
+A powerful physical memory usage analysis utility from Microsoft Sysinternals. RAMMap provides detailed, real-time information about how Windows is allocating physical memory, including how much is in use by processes, drivers, the kernel, and various cached data. **It also contains some cleaning features that address certain memory areas similar to Windows Memory Cleaner Enhanced.** It's an excellent tool to use alongside WinMemoryCleanerEnhanced to understand precisely *where* memory is being used before and after an optimization.
 
 ## ❓ Frequently Asked Questions (FAQ)
 
@@ -339,7 +302,7 @@ This is an excellent question that gets to the core of this project's philosophy
 
 **The longer answer:** We've all been burnt. The PC utility market has a dark history of deceptive "boosters" that preyed on users' frustrations. They were the T-Virus of the software world, promising performance but often making things worse with shady, undocumented tricks. That history creates a lot of justified prejudice.
 
-WinMemoryCleaner is the **antivirus serum**. It's not a magical cure-all, but a targeted, clean, and honest tool. Here's why it's different and still relevant:
+WinMemoryCleanerEnhanced is the **antivirus serum**. It's not a magical cure-all, but a targeted, clean, and honest tool. Here's why it's different and still relevant:
 
 * **It's for the Majority, Not Just the Elite:** While a brand-new PC with 64GB of RAM might not see a dramatic difference, that's not the reality for the average user. To understand what typical PCs look like, we can look at the Steam Hardware & Software Survey, which collects data from millions of gamers worldwide. According to this survey, the most common amount of RAM is just 16GB. This tool is built for that majority: the student with an 8GB laptop, the gamer on a budget with 16GB, and the developer running multiple virtual machines who needs to reclaim every last megabyte to keep their system running smoothly.
 * **It Gives You Control:** Modern Windows is good at memory management, but it's automated. It doesn't know you're about to launch a massive game and need all available RAM *right now*. This tool lets you make that decision yourself by clearing cached memory (the Standby List) on demand.
@@ -372,6 +335,77 @@ That's a common issue that persists with every new app version. I constantly sub
 It helps if more users [submit the app for malware analysis](https://www.microsoft.com/en-us/wdsi/filesubmission)
 
 Meanwhile, as a workaround, you can [add an exclusion to Windows Security](https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26)
+
+## 💻 Command Line Interface & Automation
+
+WinMemoryCleanerEnhanced can be run headless from scripts, batch files, shortcuts, or Windows Task Scheduler.
+
+### Available Switches
+
+| Argument | Description |
+|:---|:---|
+| `/Optimize` or `/Clean` or `/Silent` | Runs memory optimization silently in the background and exits immediately. Uses configured memory areas if none are explicitly specified. |
+| `/All` | Optimizes all supported memory areas (Working Set, System File Cache, Modified File Cache, Standby List, Low-Priority Standby List, Modified Page List, Combined Page List, Registry Cache). |
+| `/{MemoryArea}` | Specifies one or more individual memory areas to clean. Valid values: `/WorkingSet`, `/SystemFileCache`, `/ModifiedFileCache`, `/StandbyList`, `/StandbyListLowPriority`, `/ModifiedPageList`, `/CombinedPageList`, `/RegistryCache`. Multiple switches can be combined (e.g. `WinMemoryCleanerEnhanced.exe /WorkingSet /StandbyList`). |
+| `/Install` | Installs and starts the background Windows Service. |
+| `/Uninstall` | Uninstalls the Windows Service, removes logon scheduled tasks and registry run keys, and cleans up temporary update files. |
+| `/Reset` | Resets all settings to their default configuration while preserving language preference. |
+
+### Automating Optimization on Specific App Launch
+
+To trigger memory cleanup whenever a specific application (such as a game or IDE) starts:
+1. Open **Windows Task Scheduler** (`taskschd.msc`).
+2. Create a new task with **Run with highest privileges**.
+3. Under **Triggers**, choose **On an event**:
+   - Log: `Security`
+   - Source: `Microsoft Windows security auditing`
+   - Event ID: `4688` (A new process has been created; requires "Audit Process Creation" enabled in Local Security Policy).
+4. Under **Actions**, set:
+   - Action: `Start a program`
+   - Program: `C:\Path\To\WinMemoryCleanerEnhanced.exe`
+   - Arguments: `/Silent /StandbyList /SystemFileCache` (or `/All`)
+
+---
+
+## 🧠 Understanding Physical RAM vs. Virtual Memory
+
+- **Physical Memory (RAM):** The actual hardware RAM installed on your motherboard. WinMemoryCleanerEnhanced actively trims process working sets and purges cached standby lists to free physical RAM so new tasks have immediate headroom without disk paging.
+- **Virtual Memory / Commit Charge:** Virtual memory represents the total address space committed by the operating system and running applications backed by RAM and pagefiles. Windows manages virtual memory allocation strictly: memory pages cannot simply be "wiped" without closing the processes that allocated them or paging them to disk.
+- **Automatic Optimization Threshold:** The auto-optimization slider configures **"When free physical memory is below X percent"**. For example, setting this to 20% means optimization automatically runs when free physical RAM drops below 20% (i.e., when physical RAM usage exceeds 80%).
+
+---
+
+## 🛠️ Building & Publishing from Source
+
+WinMemoryCleanerEnhanced compiles into a single, portable, self-contained executable under 1.2MB with zero external DLL dependencies and full backward compatibility from Windows XP / Server 2003 through Windows 11.
+
+### Prerequisites
+- Windows OS (Windows XP or later)
+- Microsoft .NET Framework 4.0 or higher
+- Visual Studio (2015, 2017, 2019, or 2022) or MSBuild 4.0+
+
+### Build Instructions
+
+1. **Clone the repository:**
+   ```cmd
+   git clone https://github.com/IgorMundstein/WinMemoryCleaner.git
+   cd WinMemoryCleaner
+   ```
+
+2. **Restore NuGet dependencies:**
+   ```cmd
+   src\nuget.exe restore src\WinMemoryCleaner.sln
+   ```
+
+3. **Build the release binary:**
+   ```cmd
+   msbuild src\WinMemoryCleaner.csproj /p:Configuration=Release
+   ```
+   Or open `src\WinMemoryCleaner.sln` in Visual Studio and build with `Release` configuration.
+
+4. **Executable Location:**
+   The compiled standalone binary is placed at:
+   `src\bin\Release\WinMemoryCleanerEnhanced.exe`
 
 ## 🌐 Translation
 
@@ -415,15 +449,20 @@ When new versions require translation updates, we may use AI tools to provide a 
 | 🇮🇪&nbsp;Irish | [Happygolucky254](https://github.com/Happygolucky254) | 🇹🇷&nbsp;Turkish | [Rıza Emet](https://github.com/rizaemet), [Viollje](https://github.com/Viollje) |
 | 🇮🇹&nbsp;Italian | [Michele](https://github.com/wintrymichi) | 🇺🇦&nbsp;Ukrainian | [Riebi](https://github.com/RieBi), [Oleksandr](https://github.com/Mariachi1231) |
 
-## ❤️ Contribute to the Project
+## 👤 Original Author & Contributions
 
-In the past, I faced challenges with the proper hardware and software needed to fully enjoy technology and gaming. It was a constant battle to squeeze every last drop of performance out of a limited machine.
+**Windows Memory Cleaner** was originally developed and maintained by **[Igor Mundstein](https://github.com/IgorMundstein)**.
 
-Although I may not rely on this tool as much as I once did, I continue to maintain it in my free time for a simple reason: to assist others who still encounter similar challenges. This project is a contribution to the field of technology and a tribute to the wonderful open-source community that supports us all.
+> *In the past, I faced challenges with the proper hardware and software needed to fully enjoy technology and gaming. It was a constant battle to squeeze every last drop of performance out of a limited machine.*  
+> *Although I may not rely on this tool as much as I once did, I continue to maintain it in my free time for a simple reason: to assist others who still encounter similar challenges. This project is a contribution to the field of technology and a tribute to the wonderful open-source community that supports us all.*
 
-If you find this app helpful, please consider tipping. Your contribution helps keep the project alive, optimized, and free for everyone.
+If you find this application helpful, please consider supporting the original creator:
 
 | 💰 Cash | 🪙 Crypto |
 | :--- | :--- |
-| [Sponsor on GitHub](https://github.com/sponsors/IgorMundstein) | [Bitcoin (BTC)](https://www.blockchain.com/btc/address/bc1qu884q5r2uqugvdhyk8l6waakumeve7jykqp7ap) |
-| [Buy me a coffee on Ko-fi](https://ko-fi.com/igormundstein) | [Ethereum (ETH)](https://www.blockchain.com/explorer/addresses/eth/0xb71A94733B0578D155D9A765E0d2C4dA0f44156d) |
+| [Sponsor Igor on GitHub](https://github.com/sponsors/IgorMundstein) | [Bitcoin (BTC)](https://www.blockchain.com/btc/address/bc1qu884q5r2uqugvdhyk8l6waakumeve7jykqp7ap) |
+| [Buy Igor a coffee on Ko-fi](https://ko-fi.com/igormundstein) | [Ethereum (ETH)](https://www.blockchain.com/explorer/addresses/eth/0xb71A94733B0578D155D9A765E0d2C4dA0f44156d) |
+
+### 🤖 Enhanced Edition Credits
+
+The **Enhanced** edition features standalone single-executable packaging, UI layout optimizations, window sizing refinements, and modernization engineered with pair-programming assistance from **[Antigravity](https://deepmind.google)**.

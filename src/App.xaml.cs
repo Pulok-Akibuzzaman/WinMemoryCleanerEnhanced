@@ -418,6 +418,19 @@ namespace WinMemoryCleaner
                         if (Enum.TryParse(argument, true, out area))
                             memoryAreas |= area;
 
+                        if (argument.Equals(Constants.App.CommandLineArgument.Optimize, StringComparison.OrdinalIgnoreCase) ||
+                            argument.Equals(Constants.App.CommandLineArgument.Clean, StringComparison.OrdinalIgnoreCase) ||
+                            argument.Equals(Constants.App.CommandLineArgument.Silent, StringComparison.OrdinalIgnoreCase))
+                        {
+                            startupType = Enums.StartupType.Silent;
+                        }
+
+                        if (argument.Equals(Constants.App.CommandLineArgument.All, StringComparison.OrdinalIgnoreCase))
+                        {
+                            startupType = Enums.StartupType.Silent;
+                            memoryAreas |= Enums.Memory.Areas.WorkingSet | Enums.Memory.Areas.SystemFileCache | Enums.Memory.Areas.ModifiedFileCache | Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.StandbyListLowPriority | Enums.Memory.Areas.ModifiedPageList | Enums.Memory.Areas.CombinedPageList | Enums.Memory.Areas.RegistryCache;
+                        }
+
                         // Startup Type
                         if (memoryAreas != Enums.Memory.Areas.None)
                             startupType = Enums.StartupType.Silent;
@@ -449,7 +462,7 @@ namespace WinMemoryCleaner
                             {
                                 var appHandle = NativeMethods.FindWindow(null, Constants.App.Title);
 
-                                if (appHandle != IntPtr.Zero && NativeMethods.IsWindowVisible(appHandle))
+                                if (appHandle != IntPtr.Zero)
                                 {
                                     int appId;
 
@@ -458,6 +471,10 @@ namespace WinMemoryCleaner
 
                                     NativeMethods.ShowWindowAsync(appHandle, Constants.Windows.ShowWindow.Restore);
                                     NativeMethods.SetForegroundWindow(appHandle);
+
+                                    var restoreMsg = NativeMethods.RegisterWindowMessage("WinMemoryCleaner_Restore");
+                                    if (restoreMsg != 0)
+                                        NativeMethods.PostMessage(appHandle, restoreMsg, IntPtr.Zero, IntPtr.Zero);
                                 }
                             }
                             finally
@@ -563,15 +580,41 @@ namespace WinMemoryCleaner
                         break;
 
                     case Enums.StartupType.Silent:
-                        DependencyInjection.Container.Resolve<IComputerService>().Optimize(Enums.Memory.Optimization.Reason.Manual, memoryAreas);
+                        try
+                        {
+                            Logger.EnableConsoleOutput();
 
-                        Shutdown();
+                            if (memoryAreas == Enums.Memory.Areas.None)
+                            {
+                                memoryAreas = Settings.MemoryAreas != Enums.Memory.Areas.None
+                                    ? Settings.MemoryAreas
+                                    : Enums.Memory.Areas.WorkingSet | Enums.Memory.Areas.SystemFileCache | Enums.Memory.Areas.ModifiedFileCache | Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.ModifiedPageList | Enums.Memory.Areas.CombinedPageList;
+                            }
+
+                            DependencyInjection.Container.Resolve<IComputerService>().Optimize(Enums.Memory.Optimization.Reason.Manual, memoryAreas);
+                        }
+                        finally
+                        {
+                            Shutdown(true);
+                        }
                         break;
 
                     case Enums.StartupType.Uninstallation:
-                        WinServiceInstaller.Uninstall();
+                        try
+                        {
+                            Logger.EnableConsoleOutput();
 
-                        Shutdown();
+                            WinServiceInstaller.Uninstall();
+                            RunOnStartup(false);
+                            Helper.StartMenuShortcut(false);
+                            Migrator.CleanupOrphanedOldUpdateFiles();
+
+                            Logger.Information("Uninstallation completed successfully.");
+                        }
+                        finally
+                        {
+                            Shutdown(true);
+                        }
                         break;
                 }
             }
@@ -651,6 +694,12 @@ namespace WinMemoryCleaner
             {
                 if (enable)
                 {
+                    if (string.IsNullOrEmpty(Path) || Path.EndsWith(".new", StringComparison.OrdinalIgnoreCase) || Path.EndsWith(".download", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Logger.Debug("Skipping RunOnStartup registration for temporary update file path: " + Path);
+                        return;
+                    }
+
                     var isTaskCreated = false;
 
                     try
@@ -778,6 +827,19 @@ namespace WinMemoryCleaner
                     using (var deleteProcess = Process.Start(deleteStartInfo))
                     {
                         deleteProcess.WaitForExit();
+                    }
+
+                    try
+                    {
+                        using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+                        {
+                            if (key != null && key.GetValue(Constants.App.Title) != null)
+                                key.DeleteValue(Constants.App.Title, false);
+                        }
+                    }
+                    catch
+                    {
+                        // ignored
                     }
                 }
             }

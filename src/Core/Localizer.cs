@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -27,6 +27,8 @@ namespace WinMemoryCleaner
 
         private static CultureInfo _culture;
         private static Language _language;
+        private static List<Language> _languages;
+        private static readonly object _languagesLock = new object();
 
         #endregion
 
@@ -118,39 +120,50 @@ namespace WinMemoryCleaner
         {
             get
             {
-                try
+                if (_languages != null)
+                    return _languages;
+
+                lock (_languagesLock)
                 {
-                    var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames()
-                        .Where(file => file.StartsWith(Constants.App.LocalizationResourcePath, StringComparison.OrdinalIgnoreCase) && file.EndsWith(Constants.App.EmbeddedResourcePathExtension, StringComparison.OrdinalIgnoreCase))
-                        .Select(file => file.Replace(Constants.App.LocalizationResourcePath, string.Empty).Replace(Constants.App.EmbeddedResourcePathExtension, string.Empty))
-                        .OrderBy(file => file)
-                        .ToList();
+                    if (_languages != null)
+                        return _languages;
 
                     try
                     {
-                        var localResources = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, string.Format(Culture, "*{0}", Constants.App.EmbeddedResourcePathExtension), SearchOption.TopDirectoryOnly)
-                            .Select(Path.GetFileNameWithoutExtension)
+                        var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames()
+                            .Where(file => file.StartsWith(Constants.App.LocalizationResourcePath, StringComparison.OrdinalIgnoreCase) && file.EndsWith(Constants.App.EmbeddedResourcePathExtension, StringComparison.OrdinalIgnoreCase))
+                            .Select(file => file.Replace(Constants.App.LocalizationResourcePath, string.Empty).Replace(Constants.App.EmbeddedResourcePathExtension, string.Empty))
+                            .OrderBy(file => file)
                             .ToList();
 
-                        if (localResources.Any())
-                            resourceNames.AddRange(localResources);
+                        try
+                        {
+                            var localResources = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, string.Format(Culture, "*{0}", Constants.App.EmbeddedResourcePathExtension), SearchOption.TopDirectoryOnly)
+                                .Select(Path.GetFileNameWithoutExtension)
+                                .ToList();
+
+                            if (localResources.Any())
+                                resourceNames.AddRange(localResources);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
+                        _languages = CultureInfo.GetCultures(CultureTypes.AllCultures)
+                            .Where(culture => resourceNames.Contains(culture.EnglishName, StringComparer.OrdinalIgnoreCase))
+                            .OrderBy(culture => culture.EnglishName, StringComparer.InvariantCultureIgnoreCase)
+                            .Select(culture => new Language(culture))
+                            .ToList();
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        // ignored
+                        Logger.Error(e);
+
+                        _languages = new List<Language> { new Language(new CultureInfo(Constants.Windows.Locale.Name.English)) };
                     }
 
-                    return CultureInfo.GetCultures(CultureTypes.AllCultures)
-                        .Where(culture => resourceNames.Contains(culture.EnglishName, StringComparer.OrdinalIgnoreCase))
-                        .OrderBy(culture => culture.EnglishName, StringComparer.InvariantCultureIgnoreCase)
-                        .Select(culture => new Language(culture))
-                        .ToList();
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-
-                    return new List<Language> { new Language(new CultureInfo(Constants.Windows.Locale.Name.English)) };
+                    return _languages;
                 }
             }
         }

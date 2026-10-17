@@ -210,6 +210,73 @@ namespace WinMemoryCleaner.Test
             {
                 Assert.DoesNotThrow(() => new Log(Enums.Log.Levels.Information, "Test message", null, null));
             }
+
+            [Test]
+            public void Log_DefaultEventId_OptimizationInfo_Is1101()
+            {
+                var optData = Mocker.CreateLogOptimizationData("Manual");
+                var log = new Log(Enums.Log.Levels.Information, "Optimized", optData);
+
+                Assert.AreEqual(1101, log.EventId);
+            }
+
+            [Test]
+            public void Log_DefaultEventId_OptimizationError_Is1102()
+            {
+                var optData = Mocker.CreateLogOptimizationData("Manual");
+                var log = new Log(Enums.Log.Levels.Error, "Optimization Failed", optData);
+
+                Assert.AreEqual(1102, log.EventId);
+            }
+
+            [Test]
+            public void Log_DefaultEventId_GeneralInfo_Is1100()
+            {
+                var log = new Log(Enums.Log.Levels.Information, "App started");
+
+                Assert.AreEqual(1100, log.EventId);
+            }
+
+            [Test]
+            public void Log_ExplicitEventId_IsPreserved()
+            {
+                var log = new Log(Enums.Log.Levels.Information, "Custom", null, null, null, 9999);
+
+                Assert.AreEqual(9999, log.EventId);
+            }
+
+            [Test]
+            public void LogOptimizationData_ToJson_IncludesReasonCodeAndDurationMs()
+            {
+                var data = Mocker.CreateLogOptimizationData("Schedule");
+                data.ReasonCode = "schedule";
+                data.DurationMs = 1234;
+
+                var serialized = Helper.Serialize(data, true);
+
+                Assert.IsTrue(serialized.Contains("\"reason_code\":\"schedule\""));
+                Assert.IsTrue(serialized.Contains("\"duration_ms\":1234"));
+                Assert.IsTrue(serialized.Contains("\"name_code\":\"StandbyList\""));
+            }
+
+            [Test]
+            public void LogOptimizationDataMemoryArea_Properties_WorkCorrectly()
+            {
+                var area = new LogOptimizationDataMemoryArea
+                {
+                    Name = "Working Set",
+                    NameCode = "WorkingSet",
+                    Duration = "0.5 s",
+                    DurationMs = 500,
+                    Error = "None"
+                };
+
+                Assert.AreEqual("Working Set", area.Name);
+                Assert.AreEqual("WorkingSet", area.NameCode);
+                Assert.AreEqual("0.5 s", area.Duration);
+                Assert.AreEqual(500, area.DurationMs);
+                Assert.AreEqual("None", area.Error);
+            }
         }
 
         #endregion
@@ -553,7 +620,6 @@ namespace WinMemoryCleaner.Test
 
         #region ObservableItem Tests
 
-        
         [TestFixture]
         public class ObservableItemTests
         {

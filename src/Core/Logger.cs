@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -336,30 +336,54 @@ namespace WinMemoryCleaner
                     }
                 }
 
-                // Write structured JSON to Trace listeners (EventLog, etc.)
-                message = Helper.Serialize(log);
+                // Write structured JSON to Trace listeners (EventLog, etc.) with stable Event IDs and minified payload
+                message = Helper.Serialize(log, true);
 
+                var eventType = TraceEventType.Information;
                 switch (log.Level)
                 {
                     case Enums.Log.Levels.Debug:
-                        if (IsDebugEnabled)
-                            Trace.WriteLine(message);
+                        if (!IsDebugEnabled)
+                            return;
+                        eventType = TraceEventType.Verbose;
                         break;
 
                     case Enums.Log.Levels.Information:
-                        if (IsInformationEnabled)
-                            Trace.TraceInformation(message);
+                        if (!IsInformationEnabled)
+                            return;
+                        eventType = TraceEventType.Information;
                         break;
 
                     case Enums.Log.Levels.Warning:
-                        if (IsWarningEnabled)
-                            Trace.TraceWarning(message);
+                        if (!IsWarningEnabled)
+                            return;
+                        eventType = TraceEventType.Warning;
                         break;
 
                     case Enums.Log.Levels.Error:
-                        if (IsErrorEnabled)
-                            Trace.TraceError(message);
+                        if (!IsErrorEnabled)
+                            return;
+                        eventType = TraceEventType.Error;
                         break;
+                }
+
+                foreach (TraceListener listener in Trace.Listeners)
+                {
+                    try
+                    {
+                        listener.TraceEvent(null, Constants.App.Title, eventType, log.EventId, message);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            listener.WriteLine(message);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }
                 }
             }
             catch (Exception e)

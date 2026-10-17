@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.ServiceProcess;
+using System.Threading;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace WinMemoryCleaner
 {
@@ -12,6 +14,7 @@ namespace WinMemoryCleaner
     {
         private readonly Computer _computer;
         private readonly IComputerService _computerService;
+        private int _isOptimizing;
         private DateTimeOffset _lastAutoOptimizationByInterval = DateTimeOffset.Now;
         private DateTimeOffset _lastAutoOptimizationByMemoryUsage = DateTimeOffset.Now;
         private readonly Timer _timer = new Timer(60000);
@@ -44,7 +47,18 @@ namespace WinMemoryCleaner
         {
             get
             {
-                return ServiceController.GetServices().Any(sc => string.Equals(sc.ServiceName, Constants.App.Name, StringComparison.OrdinalIgnoreCase));
+                try
+                {
+                    using (var service = new ServiceController(Constants.App.Name))
+                    {
+                        var status = service.Status;
+                        return true;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
@@ -60,7 +74,7 @@ namespace WinMemoryCleaner
             {
                 try
                 {
-                    using (var service = ServiceController.GetServices().First(sc => string.Equals(sc.ServiceName, Constants.App.Name, StringComparison.OrdinalIgnoreCase)))
+                    using (var service = new ServiceController(Constants.App.Name))
                     {
                         service.Refresh();
 
@@ -110,30 +124,38 @@ namespace WinMemoryCleaner
         /// <param name="e"></param>
         private void OnTimer(object sender, ElapsedEventArgs e)
         {
-            // App priority
-            App.SetPriority(Settings.RunOnPriority);
-
-            // Update memory info
-            _computer.Memory = _computerService.Memory;
-
-            var reason = AutoOptimizationPolicy.GetReason(
-                DateTimeOffset.Now,
-                _lastAutoOptimizationByInterval,
-                _lastAutoOptimizationByMemoryUsage,
-                Settings.AutoOptimizationInterval,
-                Settings.AutoOptimizationMemoryUsage,
-                _computer.Memory.Physical.Free.Percentage);
-
-            if (reason.HasValue)
-            {
-                DependencyInjection.Container.Resolve<IComputerService>().Optimize(reason.Value, Settings.MemoryAreas);
-
-                if (reason.Value == Enums.Memory.Optimization.Reason.Schedule)
-                    _lastAutoOptimizationByInterval = DateTimeOffset.Now;
-                else
-                    _lastAutoOptimizationByMemoryUsage = DateTimeOffset.Now;
-
+            if (Interlocked.CompareExchange(ref _isOptimizing, 1, 0) != 0)
                 return;
+
+            try
+            {
+                // App priority
+                App.SetPriority(Settings.RunOnPriority);
+
+                // Update memory info
+                _computer.Memory = _computerService.Memory;
+
+                var reason = AutoOptimizationPolicy.GetReason(
+                    DateTimeOffset.Now,
+                    _lastAutoOptimizationByInterval,
+                    _lastAutoOptimizationByMemoryUsage,
+                    Settings.AutoOptimizationInterval,
+                    Settings.AutoOptimizationMemoryUsage,
+                    _computer.Memory.Physical.Free.Percentage);
+
+                if (reason.HasValue)
+                {
+                    DependencyInjection.Container.Resolve<IComputerService>().Optimize(reason.Value, Settings.MemoryAreas);
+
+                    if (reason.Value == Enums.Memory.Optimization.Reason.Schedule)
+                        _lastAutoOptimizationByInterval = DateTimeOffset.Now;
+                    else
+                        _lastAutoOptimizationByMemoryUsage = DateTimeOffset.Now;
+                }
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isOptimizing, 0);
             }
         }
     }
